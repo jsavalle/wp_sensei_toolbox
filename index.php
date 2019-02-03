@@ -13,8 +13,8 @@ Author URI:
 add_action('admin_menu', 'sensei_toolbox_menu');
 
 function sensei_toolbox_menu(){
-  add_menu_page('Toolbox Page', 'Extra Toolbox', 'manage_options', 'sensei_toolbox-slug', 'sensei_toolbox_admin_page');
-
+  //add_menu_page('Toolbox Page', 'Sensei Toolbox', 'manage_options', 'sensei_toolbox-slug', 'sensei_toolbox_admin_page');
+  add_submenu_page('sensei', 'Sensei Toolbox Page', 'Sensei Toolbox', 'manage_options', 'sensei_toolbox-slug', 'sensei_toolbox_admin_page');
 }
 
 function sensei_toolbox_admin_page() {
@@ -35,30 +35,59 @@ function sensei_toolbox_admin_page() {
 
   echo '<div class="wrap">';
 
-  echo '<h2>Toolbox</h2>';
+  echo '<h2>Sensei Toolbox</h2>';
 
+  $all_courses = WooThemes_Sensei_Course::get_all_courses();
+  
+  $course_list   = "<label for='course_select'>Choose a course</label>";
+  $course_list  .= "<select name='course_select'>";
+  $course_list  .= "<option value='0'>-----------</option>";
+
+  if (count($all_courses) > 0){
+    foreach( $all_courses as $course ){
+      $course_list .= "<option value='".$course->ID."'>".$course->post_title."</option>";
+    }
+    $course_list .= "</select>";
+  }
+  else {
+    echo '<div id="message" class="error fade"><p>'
+    .'No course was created yet .' . '</p></div></div>';
+    exit();
+  }
   // Check whether the button has been pressed AND also check the nonce
-  if (isset($_POST['test_button']) && check_admin_referer('test_button_clicked')) {
+  if (isset($_POST['export_confirmed']) && check_admin_referer('export_confirmed_clicked')) {
     // the button has been pressed AND we've passed the security check
-    test_button_action();
+    $course_id_selected = $_POST['course_id_selected'];
+    if (is_numeric($course_id_selected) && $course_id_selected > 0){
+      export_emails_button_action($course_id_selected);
+    }
+    else {
+      echo '<div id="message" class="error fade"><p>'
+    .'No valid course id was provided .' . '</p></div>';
+
+    }
   }
 
-  echo '<form action="options-general.php?page=sensei_toolbox-slug" method="post">';
+  echo '<form action="admin.php?page=sensei_toolbox-slug" method="post">';
 
   // this is a WordPress security feature - see: https://codex.wordpress.org/WordPress_Nonces
-  wp_nonce_field('test_button_clicked');
-  echo '<input type="hidden" value="true" name="test_button" />';
-  submit_button('Call Function');
+  wp_nonce_field('export_confirmed_clicked');
+  echo $course_list;
+  echo '<input type="text" name="course_id_selected" />';
+  echo '<input type="hidden" value="true" name="export_confirmed" />';
+  submit_button('Call Function', 'primary', 'export_button', true);
   echo '</form>';
 
   echo '</div>';
 
 }
 
-function test_button_action()
+function export_emails_button_action($course_id_selected)
 {
   echo '<div id="message" class="updated fade"><p>'
     .'The "Call Function" button was clicked.' . '</p></div>';
+
+  print("<pre> ## ".$course_id_selected." ##</pre>");
 
     
   // Course ID can be found in the URL when you edit the course
@@ -90,10 +119,11 @@ print("<pre>\n****************\n");
 print_r($users);
 print("</pre>");
 
-foreach( $users as $student ){
-  print("<pre>");
-  print_r($student->data);
-  print("</pre>");
-}  
+  foreach( $users as $student ){
+    print("<pre>");
+    print_r($student->data);
+    print("</pre>");
+  }  
+}
 
 ?>
