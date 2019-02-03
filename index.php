@@ -17,6 +17,30 @@ function sensei_toolbox_menu(){
   add_submenu_page('sensei', 'Sensei Toolbox Page', 'Sensei Toolbox', 'manage_options', 'sensei_toolbox-slug', 'sensei_toolbox_admin_page');
 }
 
+
+
+
+add_action('admin_enqueue_scripts', 'sense_toolbox_reg_css_and_js');
+
+function sense_toolbox_reg_css_and_js($hook)
+{
+  //wp_die($hook);
+  // Load only on ?page=mypluginname
+  if($hook != 'sensei_page_sensei_toolbox-slug') {
+    return;
+  }
+    //wp_enqueue_style( 'custom_wp_admin_css', plugins_url('admin-style.css', __FILE__) );
+
+    wp_enqueue_style('boot_css', plugins_url('inc/bootstrap.css',__FILE__ ));
+    wp_enqueue_style('boot_theme_css', plugins_url('inc/bootstrap_theme.css',__FILE__ ));
+    wp_enqueue_style('toolbox_css', plugins_url('inc/toolbox.css',__FILE__ ));
+    wp_enqueue_script('boot_js', plugins_url('inc/bootstrap.js',__FILE__ ));
+    //wp_enqueue_script('ln_script', plugins_url('inc/main_script.js', __FILE__), ['jquery'], false, true);
+}
+
+
+
+
 function sensei_toolbox_admin_page() {
 
   // This function creates the output for the admin page.
