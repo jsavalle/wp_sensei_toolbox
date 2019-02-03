@@ -111,28 +111,28 @@ function sensei_toolbox_admin_page() {
 function export_emails_button_action($course_id_selected, $status_selected)
 {
   echo '<div id="message" class="success fade"><p>'
-  .'No course was created yet .' . '</p></div></div>';
+  .'No course was created yet .' . '</p></div>';
 
   //print("<pre> ## ".$course_id_selected." ##</pre>");
 
     
   // Course ID can be found in the URL when you edit the course
-  $course_id = '790';
+//  $course_id = '790';
 
   $activity_args = array(
-    'post_id' => $course_id,
+    'post_id' => $course_id_selected,
     'type' => 'sensei_course_status',
     //'status' => 'complete',
-    'status' => 'in-progress',
+    'status' => $status_selected,
   );
 
 
   // run WP_Comment_Query to get the activity on the course
   $user_statusses = WooThemes_Sensei_Utils::sensei_check_for_activity( $activity_args, true );
 
-  // print("<pre>");
-  // print_r($user_statusses);
-  // print("</pre>");
+ //  print("<pre>");
+ //  print_r($user_statusses);
+ //  print("</pre>");
 
 
 //Now get all the users
