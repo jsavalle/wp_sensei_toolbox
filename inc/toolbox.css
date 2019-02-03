@@ -5,3 +5,8 @@
 .sensei_toolbox h2 {
   margin-bottom: 30px;
 }
+
+
+.sensei_toolbox div.updated{
+  display: none;
+}
