@@ -8,5 +8,5 @@
 
 
 .sensei_toolbox div.updated{
-  display: none;
+  display: none !important;
 }
